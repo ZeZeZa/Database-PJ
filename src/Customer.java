@@ -1,7 +1,9 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Scanner;
 
 public class Customer {
     public static String url = "jdbc:mysql://localhost:3306/pj";
@@ -9,37 +11,41 @@ public class Customer {
     public static String password = "gyh040506";
     public static Connection connection;
     public static Statement statement;
+    private String name;
+    private String identity;
 
-    public static void insertCustomer(String name, String identity) {
-        String sql = "INSERT INTO customer (name, identity) VALUES ('"
-                + name + "', '" + identity + "')";
-        try {
-            connection = DriverManager.getConnection(url, username, password);
-            statement = connection.createStatement();
-            statement.execute(sql);
-            statement.close();
-            connection.close();
-        } catch (SQLException e) {
-            System.err.println("连接数据库时发生错误！");
-            e.printStackTrace();
+    public void customer() {
+        while (logIn()) {
+
         }
     }
 
-    public static void deleteCustomer(String name, String identity) {
-        String sql = "DELETE FROM customer WHERE name = '" + name + "' AND identity = '" + identity + "'";
-        try {
-            connection = DriverManager.getConnection(url, username, password);
-            statement = connection.createStatement();
-            int rowsAffected = statement.executeUpdate(sql);
-            if (rowsAffected > 0) {
-            } else {
-                System.out.println("找不到该用户");
+    public boolean logIn() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("请输入您的名字与身份(用空格分隔):");
+            String input = scanner.nextLine();
+            String[] parts = input.split(" ");
+            String name = parts[0];
+            String identity = parts[1];
+            String sql = "SELECT * FROM customer WHERE name = '" + name + "' AND identity = '" + identity + "'";
+            try {
+                connection = DriverManager.getConnection(url, username, password);
+                statement = connection.createStatement();
+                ResultSet rs = statement.executeQuery(sql);
+                if (rs.next()) {
+                    this.name = name;
+                    this.identity = identity;
+                    statement.close();
+                    connection.close();
+                    return true;
+                } else {
+                    System.out.println("名字或身份错误！");
+                }
+            } catch (SQLException e) {
+                System.err.println("连接数据库时发生错误！");
+                e.printStackTrace();
             }
-            statement.close();
-            connection.close();
-        } catch (SQLException e) {
-            System.err.println("连接数据库时发生错误！");
-            e.printStackTrace();
         }
     }
 }
