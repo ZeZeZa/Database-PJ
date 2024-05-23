@@ -24,12 +24,12 @@ public class Create {
                                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
                                 + "name VARCHAR(255) NOT NULL, "
                                 + "type VARCHAR(255) NOT NULL, "
-                                + "description VARCHAR(255) NOT NULL, "
+                                + "description VARCHAR(255) DEFAULT '', "
                                 + "price DECIMAL(10, 2) NOT NULL, "
-                                + "imageURL VARCHAR(255) NOT NULL, "
-                                + "ingredient VARCHAR(255) NOT NULL, "
-                                + "nutrient VARCHAR(255) NOT NULL, "
-                                + "allergen VARCHAR(255) NOT NULL, "
+                                + "imageURL VARCHAR(255) DEFAULT '', "
+                                + "ingredient VARCHAR(255) DEFAULT '', "
+                                + "nutrient VARCHAR(255) DEFAULT '', "
+                                + "allergen VARCHAR(255) DEFAULT '', "
                                 + "merchant_id INT, "
                                 + "FOREIGN KEY (merchant_id) REFERENCES merchant(id))";
 

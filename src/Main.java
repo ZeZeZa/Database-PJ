@@ -14,6 +14,9 @@ public class Main {
             } else if (identity == 2) {
                 Customer customer = new Customer();
                 customer.customer();
+            } else if (identity == 3) {
+                Merchant merchant = new Merchant();
+                merchant.merchant();
             } else if (identity == 4) {
                 break;
             }
