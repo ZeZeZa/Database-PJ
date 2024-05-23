@@ -11,17 +11,28 @@ public class Customer {
     public static String password = "gyh040506";
     public static Connection connection;
     public static Statement statement;
+    private int id;
     private String name;
     private String identity;
+    private Scanner scanner;
 
     public void customer() {
-        while (logIn()) {
-
+        scanner = new Scanner(System.in);
+        if (logIn()) {
+            while (true) {
+                System.out.println("请选择要执行的操作:(1:查看个人信息/2:搜索商户/3:退出)");
+                int operation = scanner.nextInt();
+                if (operation == 1) {
+                    printCustomerInfo();
+                } else if (operation == 3) {
+                    break;
+                }
+            }
         }
     }
 
-    public boolean logIn() {
-        Scanner scanner = new Scanner(System.in);
+    private boolean logIn() {
+        scanner = new Scanner(System.in);
         while (true) {
             System.out.println("请输入您的名字与身份(用空格分隔):");
             String input = scanner.nextLine();
@@ -34,6 +45,8 @@ public class Customer {
                 statement = connection.createStatement();
                 ResultSet rs = statement.executeQuery(sql);
                 if (rs.next()) {
+                    int id = rs.getInt("id");
+                    this.id = id;
                     this.name = name;
                     this.identity = identity;
                     statement.close();
@@ -47,5 +60,9 @@ public class Customer {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void printCustomerInfo() {
+        System.out.println("用户ID: " + id + ", 名称: " + name + ", 身份: " + identity);
     }
 }
