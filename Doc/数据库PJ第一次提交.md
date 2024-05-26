@@ -6,19 +6,19 @@
 
 ## ERD
 
-![ERD](A:\Personal\课程相关\DataBase\Database-PJ\Doc\ERD.png)
+![ERD](./ERD.png)
 
 ## 表结构
 
 ## 总览
 
-## ![overview](A:\Personal\课程相关\DataBase\Database-PJ\Doc\overview.png)
+## ![overview](./overview.png)
 
 ## schema展示
 
-![describe p1](A:\Personal\课程相关\DataBase\Database-PJ\Doc\describe p1.png)
+![describe p1](./describe p1.png)
 
-![describe p2](A:\Personal\课程相关\DataBase\Database-PJ\Doc\describe p2.png)
+![describe p2](./describe p2.png)
 
 ## 已完成的内容
 
