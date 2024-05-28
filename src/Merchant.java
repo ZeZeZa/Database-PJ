@@ -34,6 +34,11 @@ public class Merchant {
                         String type = parts[1];
                         int price = Integer.parseInt(parts[2]);
                         insertDish(name, type, price);
+                    } else if (command == 2) {
+                        System.out.println("请输入菜品名称:");
+                        String name = scanner.nextLine();
+                        deleteDish(name);
+                    } else if (command == 3) {
                     }
                 } else if (operation == 3) {
                     break;
@@ -80,6 +85,24 @@ public class Merchant {
             connection = DriverManager.getConnection(url, username, password);
             statement = connection.createStatement();
             statement.execute(sql);
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.err.println("连接数据库时发生错误！");
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteDish(String name) {
+        String sql = "DELETE FROM dish WHERE name = '" + name + "'";
+        try {
+            connection = DriverManager.getConnection(url, username, password);
+            statement = connection.createStatement();
+            int rowsAffected = statement.executeUpdate(sql);
+            if (rowsAffected > 0) {
+            } else {
+                System.out.println("找不到该菜品");
+            }
             statement.close();
             connection.close();
         } catch (SQLException e) {
