@@ -22,13 +22,20 @@ public class Customer {
         scanner = new Scanner(System.in);
         if (logIn()) {
             while (true) {
-                System.out.println("请选择要执行的操作:(1:查看个人信息/2:搜索商户/3:退出)");
+                System.out.println("请选择要执行的操作(1:查看个人信息/2:搜索商户/3:退出):");
                 int operation = scanner.nextInt();
                 scanner.nextLine();
                 if (operation == 1) {
                     printCustomerInfo();
                 } else if (operation == 2) {
                     searchMerchantsByKeyword();
+                    System.out.println("输入商户id以查看该商户的完整菜单,输入非数字以回到上一页");
+                    String input = scanner.nextLine();
+                    if (isInteger(input)) {
+                        int merchantId = Integer.parseInt(input);
+                        searchSpecificMerchant(merchantId);
+                    } else {
+                    }
                 } else if (operation == 3) {
                     break;
                 }
@@ -97,6 +104,40 @@ public class Customer {
                 System.err.println("连接数据库时发生错误！");
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void searchSpecificMerchant(int merchantId) {
+        String sql = "SELECT * FROM dish WHERE merchant_id = '" + merchantId + "'";
+        try {
+            connection = DriverManager.getConnection(url, username, password);
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            if (!rs.isBeforeFirst()) {
+                System.out.println("没有找到该商户");
+            } else {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String name = rs.getString("name");
+                    String type = rs.getString("type");
+                    int price = rs.getInt("price");
+                    System.out.println("菜品ID: " + id + ", 名称: " + name + ", 类型：" + type + ", 价格：" + price);
+                }
+                statement.close();
+                connection.close();
+            }
+        } catch (SQLException e) {
+            System.err.println("连接数据库时发生错误！");
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean isInteger(String input) {
+        try {
+            Integer.parseInt(input);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 }
