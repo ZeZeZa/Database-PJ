@@ -6,19 +6,17 @@
 
 ## ERD
 
-![alt text](./ERD.png)
+![ERD](./ERD.png)
 
 ## 表结构
 
 ## 总览
 
-## ![overview](./overview.png)
+![alt text](./overview.png)
 
 ## schema展示
 
-![describe p1](./describe p1.png)
-
-![describe p2](./describe p2.png)
+![alt text](./describe2.png)
 
 ## 已完成的内容
 

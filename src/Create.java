@@ -1,12 +1,16 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Create {
         public static String url = "jdbc:mysql://localhost:3306/pj";
         public static String username = "root";
-        public static String password = "gyh040506";
+        public static String password = "[111111]";
         public static Connection connection;
         public static Statement statement;
 
@@ -89,8 +93,134 @@ public class Create {
                         statement.close();
                         connection.close();
                 } catch (SQLException e) {
+                        System.err.println("连接数据库时发生错误！检查用户和密码。");
+                        e.printStackTrace();
+                }
+        }
+        public static void createTuples(){
+                BufferedReader bufferedReader;
+                ArrayList<String> sql = new ArrayList<>();
+                ArrayList<String> sqlDelete = new ArrayList<>();
+                //read text file
+                try{ 
+                        
+                        FileReader fileReader = new FileReader("./data/customer.txt");
+                        bufferedReader = new BufferedReader(fileReader);
+                        while(true){
+                                String tableName;
+                                String attribute;
+                                ArrayList<String> tuples=new ArrayList<>();
+                                //read first line
+                                String line;
+                                line=bufferedReader.readLine();
+                                if(line==null||line.equals(""))break;
+                                String[] arr = line.split(" ");
+                                tableName = arr[0];
+                                attribute=arr[1].replaceAll("^\\(|\\)$", "");
+                                while (true) {
+                                        line=bufferedReader.readLine();
+                                        if(line==null||line.equals(""))break;
+                                        tuples.add(line);
+                                }
+                                sqlDelete.add(delete(tableName));
+                                sql.add(insert(tableName,attribute,tuples));
+                                
+                                
+                        }
+                        
+                }catch(Exception e){
+                        System.err.println("读取文件时发生错误！");
+                        e.printStackTrace();
+                }
+                
+
+
+                
+                try {
+                        connection = DriverManager.getConnection(url, username, password);
+                        statement = connection.createStatement();
+                        for (int i=0;i<sql.size();i++){
+
+                                String string = sqlDelete.get(sqlDelete.size()-1-i);
+                                statement.execute(string);
+                        }
+                        for (int i=0;i<sql.size();i++){
+                                String string = sql.get(i);
+                                statement.execute(string);
+                        }
+                        
+
+                        statement.close();
+                        connection.close();
+                } catch (SQLException e) {
                         System.err.println("连接数据库时发生错误！");
                         e.printStackTrace();
                 }
         }
+        public static void createIndex(){
+                // String dropIndexCustomer="ALTER TABLE dish DROP INDEX idx_customer_name;";
+
+                // String dropIndexOrder="DROP INDEX idx_order_customer_id ON orders";
+                // String dropIndexMerchant="DROP INDEX idx_merchant_name ON merchant";
+                // String dropIndexDish="DROP INDEX idx_dish_name ON dish";
+
+                String createIndexCustomer = "CREATE INDEX  idx_customer_name ON customer(id)";
+                String createOrder= "CREATE INDEX   idx_order_customer_id ON orders(customer_id)";
+                String createMerchant= "CREATE INDEX   idx_merchant_name ON merchant(id)";
+                String createDish= "CREATE INDEX  idx_dish_name  ON dish(id)";
+                try {
+                        connection = DriverManager.getConnection(url, username, password);
+                        statement = connection.createStatement();
+                        statement.execute(createIndexCustomer);
+                        statement.close();
+                        connection.close();
+                } catch (SQLException e) {
+                }
+                try {
+                        connection = DriverManager.getConnection(url, username, password);
+                        statement = connection.createStatement();
+                        
+                        statement.execute(createMerchant);
+                        
+                        statement.close();
+                        connection.close();
+                } catch (SQLException e) {
+                }
+                try {
+                        connection = DriverManager.getConnection(url, username, password);
+                        statement = connection.createStatement();
+                        
+                        statement.execute(createDish);
+                        
+                        statement.close();
+                        connection.close();
+                } catch (SQLException e) {
+                }
+                try {
+                        connection = DriverManager.getConnection(url, username, password);
+                        statement = connection.createStatement();
+
+                        statement.execute(createOrder);
+                        statement.close();
+                        connection.close();
+                } catch (SQLException e) {
+                }
+        }
+        private static String insert(String tableName, String attribute, List<String> arrAttribute){
+                String sql = "INSERT INTO "+tableName+"("+attribute+") VALUES ";
+                for(int i=0;i<arrAttribute.size();i++){
+                        if(i==arrAttribute.size()-1){
+                                sql+="("+arrAttribute.get(i)+");";
+                        }else{
+                                sql+="("+arrAttribute.get(i)+"),";
+                        }
+                }
+                return sql;
+        }
+        private static String delete(String tableName){
+                String sql = "DELETE FROM "+tableName+" ;";
+                return sql;
+        }
+        
 }
+ 
