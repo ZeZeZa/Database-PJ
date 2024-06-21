@@ -28,12 +28,12 @@ public class Create {
                                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
                                 + "name VARCHAR(255) NOT NULL, "
                                 + "type VARCHAR(255) NOT NULL, "
-                                + "description VARCHAR(255) DEFAULT '', "
+                                + "description VARCHAR(255) DEFAULT '暂无', "
                                 + "price DECIMAL(10, 2) NOT NULL, "
-                                + "imageURL VARCHAR(255) DEFAULT '', "
-                                + "ingredient VARCHAR(255) DEFAULT '', "
-                                + "nutrient VARCHAR(255) DEFAULT '', "
-                                + "allergen VARCHAR(255) DEFAULT '', "
+                                + "imageURL VARCHAR(255) DEFAULT '暂无', "
+                                + "ingredient VARCHAR(255) DEFAULT '暂无', "
+                                + "nutrient VARCHAR(255) DEFAULT '暂无', "
+                                + "allergen VARCHAR(255) DEFAULT '暂无', "
                                 + "merchant_id INT, "
                                 + "FOREIGN KEY (merchant_id) REFERENCES merchant(id))";
 
