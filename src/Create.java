@@ -18,10 +18,13 @@ public class Create {
                 String createCustomer = "CREATE TABLE IF NOT EXISTS customer ("
                                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
                                 + "name VARCHAR(255) NOT NULL, "
-                                + "identity VARCHAR(255) NOT NULL)";
+                                + "identity VARCHAR(255) NOT NULL,"
+                                + "password VARCHAR(255) NOT NULL,"
+                                + "gender VARCHAR(255) NOT NULL DEFAULT '男' )";
 
                 String createMerchant = "CREATE TABLE IF NOT EXISTS merchant ("
                                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                                + "address VARCHAR(255) NOT NULL, "
                                 + "name VARCHAR(255) NOT NULL)";
 
                 String createDish = "CREATE TABLE IF NOT EXISTS dish ("
@@ -38,10 +41,13 @@ public class Create {
                                 + "FOREIGN KEY (merchant_id) REFERENCES merchant(id))";
 
                 String createOrder = "CREATE TABLE IF NOT EXISTS orders ("
-                                + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                                + "id INT, "
                                 + "time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
-                                + "customer_id INT, "
-                                + "dish_id INT, "
+                                + "customer_id INT , "
+                                + "dish_id INT , "
+                                + "count INT , "
+                                + "online BOOLEAN DEFAULT True, " 
+                                + "PRIMARY KEY (id,customer_id,dish_id), "
                                 + "FOREIGN KEY (customer_id) REFERENCES customer(id), "
                                 + "FOREIGN KEY (dish_id) REFERENCES dish(id))";
 
@@ -78,9 +84,22 @@ public class Create {
                                 + "dish_id INT, "
                                 + "FOREIGN KEY (customer_id) REFERENCES customer(id), "
                                 + "FOREIGN KEY (dish_id) REFERENCES dish(id))";
+                String createMessage = "CREATE TABLE IF NOT EXISTS message ("
+                                + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                                + "customer_id INT, "
+                                + "content VARCHAR(255), "
+                                + "time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
+                                + "FOREIGN KEY (customer_id) REFERENCES customer(id))";
+                                
 
                 try {
                         connection = DriverManager.getConnection(url, username, password);
+
+                } catch (SQLException e) {
+                        System.err.println("连接数据库时发生错误！检查用户和密码。");
+                        e.printStackTrace();
+                }
+                try {
                         statement = connection.createStatement();
                         statement.execute(createCustomer);
                         statement.execute(createMerchant);
@@ -90,10 +109,11 @@ public class Create {
                         statement.execute(createMerchantReview);
                         statement.execute(createFavoriteMerchant);
                         statement.execute(createFavoriteDish);
+                        statement.execute(createMessage);
                         statement.close();
                         connection.close();
                 } catch (SQLException e) {
-                        System.err.println("连接数据库时发生错误！检查用户和密码。");
+                        System.err.println("添加表时出现错误！");
                         e.printStackTrace();
                 }
         }
@@ -104,7 +124,7 @@ public class Create {
                 //read text file
                 try{ 
                         
-                        FileReader fileReader = new FileReader("./data/customer.txt");
+                        FileReader fileReader = new FileReader("./data/templateData.txt");
                         bufferedReader = new BufferedReader(fileReader);
                         while(true){
                                 String tableName;
@@ -123,7 +143,7 @@ public class Create {
                                         tuples.add(line);
                                 }
                                 sqlDelete.add(delete(tableName));
-                                sql.add(insert(tableName,attribute,tuples));
+                                sql.add(insertMutiple(tableName,attribute,tuples));
                                 
                                 
                         }
@@ -206,7 +226,7 @@ public class Create {
                 } catch (SQLException e) {
                 }
         }
-        private static String insert(String tableName, String attribute, List<String> arrAttribute){
+        public static String insertMutiple(String tableName, String attribute, List<String> arrAttribute){
                 String sql = "INSERT INTO "+tableName+"("+attribute+") VALUES ";
                 for(int i=0;i<arrAttribute.size();i++){
                         if(i==arrAttribute.size()-1){
@@ -215,6 +235,14 @@ public class Create {
                                 sql+="("+arrAttribute.get(i)+"),";
                         }
                 }
+                return sql;
+        }
+        public static String insertSingle(String tableName, String attribute, String arrAttribute){
+                String sql = "INSERT INTO "+tableName+"("+attribute+") VALUES ";
+
+                                sql+="("+arrAttribute+");";
+                        
+                
                 return sql;
         }
         private static String delete(String tableName){
