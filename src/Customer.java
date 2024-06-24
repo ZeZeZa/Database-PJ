@@ -291,7 +291,7 @@ public class Customer {
 
     private void customerQuery() {
         CustomQueries customQueries = new CustomQueries(password);
-
+        
         
         
         
@@ -305,8 +305,8 @@ public class Customer {
             System.out.println("6:查询某个商户所有菜品的收藏量；");
             System.out.println("7:查询各个菜品通过排队点餐和在线点餐的销量。");
             System.out.println("8:退出");
+            System.out.println("9:高级查询");
             int operation = scanner.nextInt();
-            scanner.nextLine();
             if (operation == 1) {
                 System.out.println("请输入商户ID：");
                 customQueries.queryDishInMerchant(scanner.nextInt());
@@ -326,9 +326,49 @@ public class Customer {
                 customQueries.queryDishSales();
             } else if (operation == 8) {
                 break;
+            }else if(operation==9){
+                advancedQuery();
             }
         }
         
         
+    }
+    public void advancedQuery(){
+        AdvancedQueries advancedQueries = new AdvancedQueries(password);
+        while(true){
+            System.out.println("输入想要查询的内容：");
+            System.out.println("1:查询商户详细菜品信息");
+            System.out.println("2：查询收藏销量");
+            System.out.println("3：忠实客户消费分布");
+            System.out.println("4：用户活跃度分析");
+            System.out.println("5：特征分析（性别与最爱商户、菜品、打分习惯）");
+            System.out.println("6：退出");
+            int operation = scanner.nextInt();
+            scanner.nextLine();
+            if (operation == 1) {
+                System.out.println("请输入商户ID：");
+                advancedQueries.dishStatAnalysis(scanner.nextInt());
+            } else if (operation == 2) {
+                System.out.println("0:查看近一周销量1：查看近一月销量2：查看近一年销量");
+                int duration=scanner.nextInt();
+                System.out.println("0:在线1：离线2：全部");
+                int method=scanner.nextInt();
+                advancedQueries.queryDishSalesAdvanced(duration, method, id);
+            } else if (operation == 3) {
+                System.out.println("请输入忠实用户门槛：");
+                int threshold=scanner.nextInt();
+                System.out.println("请输入要查询的商户");
+
+                advancedQueries.dishSalesOfDedecatedCustomer(threshold, scanner.nextInt());
+                
+            } else if (operation == 4) {
+                System.out.println("按什么维度分析？0：按周1：按月");
+                advancedQueries.customerAnalysis(id, scanner.nextInt());;
+            }else if (operation == 5) {
+                advancedQueries.customerStatAnalysis();
+            } else if (operation == 6) {
+                break;
+            } 
+        }
     }
 }
