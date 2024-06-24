@@ -18,7 +18,7 @@ import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 public class Customer {
     public static String url = "jdbc:mysql://localhost:3306/pj";
     public static String username = "root";
-    public static String password = "[111111]";
+    public static String password = "gyh040506";
     public static Connection connection;
     public static Statement statement;
     public static PreparedStatement preparedStatement;
@@ -251,29 +251,31 @@ public class Customer {
 
         Random random = new Random();
         int order_id = random.nextInt(100000000);
-        Date day=new Date();
+        Date day = new Date();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time=df.format(day);
-        time="'"+time+"'";
-        ArrayList<Integer> dish_count=new ArrayList<Integer>();
-        for(int i=0;i<dish_id.length;i++){
-            int count=1;
-            if(dish_id[i].equals("")) continue;
-            for(int j=i+1;j<dish_id.length;j++){
-                if(dish_id[i].equals(dish_id[j])){
-                    dish_id[j]="";
+        String time = df.format(day);
+        time = "'" + time + "'";
+        ArrayList<Integer> dish_count = new ArrayList<Integer>();
+        for (int i = 0; i < dish_id.length; i++) {
+            int count = 1;
+            if (dish_id[i].equals(""))
+                continue;
+            for (int j = i + 1; j < dish_id.length; j++) {
+                if (dish_id[i].equals(dish_id[j])) {
+                    dish_id[j] = "";
                     count++;
                 }
             }
             dish_count.add(count);
         }
-            
 
-        int posInCount=0;
-        for (int i=0;i<dish_id.length;i++){
-            if(dish_id[i].equals(""))continue;
-            String attributes=Integer.toString(order_id)+","+Integer.toString(id)+","+dish_id[i]+","+time+","+Integer.toString(dish_count.get(posInCount));
-            String sql = Create.insertSingle("orders","id,customer_id,dish_id,time,count" , attributes);
+        int posInCount = 0;
+        for (int i = 0; i < dish_id.length; i++) {
+            if (dish_id[i].equals(""))
+                continue;
+            String attributes = Integer.toString(order_id) + "," + Integer.toString(id) + "," + dish_id[i] + "," + time
+                    + "," + Integer.toString(dish_count.get(posInCount));
+            String sql = Create.insertSingle("orders", "id,customer_id,dish_id,time,count", attributes);
             try {
                 connection = DriverManager.getConnection(url, username, password);
                 statement = connection.createStatement();
@@ -291,15 +293,12 @@ public class Customer {
 
     private void customerQuery() {
         CustomQueries customQueries = new CustomQueries(password);
-        
-        
-        
-        
-        while(true){
+
+        while (true) {
             System.out.println("输入想要查询的内容：");
             System.out.println("1:查询某家商户的菜品简略信息列表");
-            System.out.println("2：查询某菜品的详细信息；");
-            System.out.println("3：查询消息列表");
+            System.out.println("2:查询某菜品的详细信息");
+            System.out.println("3:查询消息列表");
             System.out.println("4:查询某个用户的订单历史");
             System.out.println("5:查询所有商户的简略信息。");
             System.out.println("6:查询某个商户所有菜品的收藏量；");
@@ -317,7 +316,7 @@ public class Customer {
                 customQueries.queryMessage(id);
             } else if (operation == 4) {
                 customQueries.queryOrders(id);
-            }else if (operation == 5) {
+            } else if (operation == 5) {
                 customQueries.queryMerchants();
             } else if (operation == 6) {
                 System.out.println("请输入想查询的商户ID（输入0以查询所有商户菜品的收藏量）：");
@@ -326,23 +325,23 @@ public class Customer {
                 customQueries.queryDishSales();
             } else if (operation == 8) {
                 break;
-            }else if(operation==9){
+            } else if (operation == 9) {
                 advancedQuery();
             }
         }
-        
-        
+
     }
-    public void advancedQuery(){
+
+    public void advancedQuery() {
         AdvancedQueries advancedQueries = new AdvancedQueries(password);
-        while(true){
+        while (true) {
             System.out.println("输入想要查询的内容：");
             System.out.println("1:查询商户详细菜品信息");
-            System.out.println("2：查询收藏销量");
-            System.out.println("3：忠实客户消费分布");
-            System.out.println("4：用户活跃度分析");
-            System.out.println("5：特征分析（性别与最爱商户、菜品、打分习惯）");
-            System.out.println("6：退出");
+            System.out.println("2:查询收藏销量");
+            System.out.println("3:忠实客户消费分布");
+            System.out.println("4:用户活跃度分析");
+            System.out.println("5:特征分析(性别与最爱商户、菜品、打分习惯)");
+            System.out.println("6:退出");
             int operation = scanner.nextInt();
             scanner.nextLine();
             if (operation == 1) {
@@ -350,25 +349,26 @@ public class Customer {
                 advancedQueries.dishStatAnalysis(scanner.nextInt());
             } else if (operation == 2) {
                 System.out.println("0:查看近一周销量1：查看近一月销量2：查看近一年销量");
-                int duration=scanner.nextInt();
+                int duration = scanner.nextInt();
                 System.out.println("0:在线1：离线2：全部");
-                int method=scanner.nextInt();
+                int method = scanner.nextInt();
                 advancedQueries.queryDishSalesAdvanced(duration, method, id);
             } else if (operation == 3) {
                 System.out.println("请输入忠实用户门槛：");
-                int threshold=scanner.nextInt();
+                int threshold = scanner.nextInt();
                 System.out.println("请输入要查询的商户");
 
                 advancedQueries.dishSalesOfDedecatedCustomer(threshold, scanner.nextInt());
-                
+
             } else if (operation == 4) {
                 System.out.println("按什么维度分析？0：按周1：按月");
-                advancedQueries.customerAnalysis(id, scanner.nextInt());;
-            }else if (operation == 5) {
+                advancedQueries.customerAnalysis(id, scanner.nextInt());
+                ;
+            } else if (operation == 5) {
                 advancedQueries.customerStatAnalysis();
             } else if (operation == 6) {
                 break;
-            } 
+            }
         }
     }
 }

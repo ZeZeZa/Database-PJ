@@ -23,9 +23,9 @@ public class Administrator {
                 int command = scanner.nextInt();
                 scanner.nextLine();
                 if (command == 1) {
-                    System.out.println("请输入需要插入的用户名称和身份(用空格分隔):");
+                    System.out.println("请输入需要插入的用户名称和身份(用逗号分隔):");
                     String input = scanner.nextLine();
-                    String[] parts = input.split(" ");
+                    String[] parts = input.split(",");
                     String name = parts[0];
                     String identity = parts[1];
                     insertCustomer(name, identity);
@@ -33,8 +33,14 @@ public class Administrator {
                     showCustomers();
                     System.out.println("请输入需要删除的用户id:");
                     int id = scanner.nextInt();
-                    deleteCustomer(id);
                     scanner.nextLine();
+                    deleteCustomer(id);
+                } else if (command == 3) {
+                    showCustomers();
+                    System.out.println("请输入需要修改的用户id:");
+                    int id = scanner.nextInt();
+                    scanner.nextLine();
+                    changeCustomer(id);
                 }
             } else if (operation == 2) {
                 System.out.println("请选择要执行的具体操作:(1:添加商户/2:删除商户/3:修改商户)");
@@ -50,6 +56,11 @@ public class Administrator {
                     int id = scanner.nextInt();
                     deleteMerchant(id);
                     scanner.nextLine();
+                } else if (command == 3) {
+                    showMerchants();
+                    System.out.println("请输入需要修改的商户id:");
+                    int id = scanner.nextInt();
+
                 }
             } else if (operation == 3) {
                 break;
@@ -78,6 +89,7 @@ public class Administrator {
         String deleteMR = "DELETE FROM merchant_review WHERE customer_id = '" + id + "'";
         String deleteDR = "DELETE FROM dish_review WHERE customer_id = '" + id + "'";
         String deleteOrder = "DELETE FROM orders WHERE customer_id = '" + id + "'";
+        String deleteMessgae = "DELETE FROM message WHERE customer_id = '" + id + "'";
         String sql = "DELETE FROM customer WHERE id = '" + id + "'";
         try {
             connection = DriverManager.getConnection(url, username, password);
@@ -88,6 +100,7 @@ public class Administrator {
             statement.executeUpdate(deleteMR);
             statement.executeUpdate(deleteDR);
             statement.executeUpdate(deleteOrder);
+            statement.executeUpdate(deleteMessgae);
             int rowsAffected = statement.executeUpdate(sql);
             if (rowsAffected > 0) {
                 connection.commit();
@@ -101,6 +114,36 @@ public class Administrator {
         } catch (SQLException e) {
             System.err.println("连接数据库时发生错误！");
             e.printStackTrace();
+        }
+    }
+
+    private void changeCustomer(int id) {
+        System.out.println("请输入要修改的属性 (name, identity, password):");
+        String attribute = scanner.nextLine();
+        System.out.println("要修改成什么?");
+        String newValue = scanner.nextLine();
+        String sql = "UPDATE customer SET " + attribute + " = '" + newValue + "' WHERE id = " + id;
+        try {
+            connection = DriverManager.getConnection(url, username, password);
+            statement = connection.createStatement();
+            int rowsAffected = statement.executeUpdate(sql);
+            if (rowsAffected > 0) {
+                System.out.println("用户信息更新成功");
+            } else {
+                System.out.println("找不到该用户");
+            }
+        } catch (SQLException e) {
+            System.err.println("更新用户信息时发生错误！");
+            e.printStackTrace();
+        } finally {
+            try {
+                if (statement != null)
+                    statement.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -119,6 +162,12 @@ public class Administrator {
     }
 
     private void deleteMerchant(int id) {
+        String deleteDR = "DELETE FROM dish_review WHERE dish_id IN (SELECT id FROM dish WHERE merchant_id = '" + id
+                + "')";
+        String deleteFD = "DELETE FROM favorite_dish WHERE dish_id IN (SELECT id FROM dish WHERE merchant_id = '" + id
+                + "')";
+        String deleteOrder = "DELETE FROM orders WHERE dish_id IN (SELECT id FROM dish WHERE merchant_id = '" + id
+                + "')";
         String deleteDish = "DELETE FROM dish WHERE merchant_id = '" + id + "'";
         String deleteFM = "DELETE FROM favorite_merchant WHERE merchant_id = '" + id + "'";
         String deleteMR = "DELETE FROM merchant_review WHERE merchant_id = '" + id + "'";
@@ -127,6 +176,9 @@ public class Administrator {
             connection = DriverManager.getConnection(url, username, password);
             statement = connection.createStatement();
             connection.setAutoCommit(false);
+            statement.executeUpdate(deleteDR);
+            statement.executeUpdate(deleteFD);
+            statement.executeUpdate(deleteOrder);
             statement.executeUpdate(deleteDish);
             statement.executeUpdate(deleteFM);
             statement.executeUpdate(deleteMR);
@@ -144,6 +196,36 @@ public class Administrator {
         } catch (SQLException e) {
             System.err.println("连接数据库时发生错误！");
             e.printStackTrace();
+        }
+    }
+
+    private void changeMerchant(int id) {
+        System.out.println("请输入要修改的属性 (name, address):");
+        String attribute = scanner.nextLine();
+        System.out.println("要修改成什么?");
+        String newValue = scanner.nextLine();
+        String sql = "UPDATE merchant SET " + attribute + " = '" + newValue + "' WHERE id = " + id;
+        try {
+            connection = DriverManager.getConnection(url, username, password);
+            statement = connection.createStatement();
+            int rowsAffected = statement.executeUpdate(sql);
+            if (rowsAffected > 0) {
+                System.out.println("商户信息更新成功");
+            } else {
+                System.out.println("找不到该商户");
+            }
+        } catch (SQLException e) {
+            System.err.println("更新商户信息时发生错误！");
+            e.printStackTrace();
+        } finally {
+            try {
+                if (statement != null)
+                    statement.close();
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
