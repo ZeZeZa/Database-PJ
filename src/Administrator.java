@@ -23,12 +23,12 @@ public class Administrator {
                 int command = scanner.nextInt();
                 scanner.nextLine();
                 if (command == 1) {
-                    System.out.println("请输入需要插入的用户名称和身份(用逗号分隔):");
+                    System.out.println("请输入需要插入的用户名称和密码(用逗号分隔):");
                     String input = scanner.nextLine();
                     String[] parts = input.split(",");
                     String name = parts[0];
-                    String identity = parts[1];
-                    insertCustomer(name, identity);
+                    String pw = parts[1];
+                    insertCustomer(name, pw);
                 } else if (command == 2) {
                     showCustomers();
                     System.out.println("请输入需要删除的用户ID:");
@@ -63,9 +63,9 @@ public class Administrator {
         }
     }
 
-    private void insertCustomer(String name, String identity) {
-        String sql = "INSERT INTO customer (name, identity) VALUES ('"
-                + name + "', '" + identity + "')";
+    private void insertCustomer(String name, String pw) {
+        String sql = "INSERT INTO customer (name, password) VALUES ('"
+                + name + "', '" + pw + "')";
         try {
             connection = DriverManager.getConnection(url, username, password);
             statement = connection.createStatement();

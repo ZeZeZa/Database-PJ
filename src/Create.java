@@ -18,13 +18,13 @@ public class Create {
                 String createCustomer = "CREATE TABLE IF NOT EXISTS customer ("
                                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
                                 + "name VARCHAR(255) NOT NULL, "
-                                + "identity VARCHAR(255) NOT NULL,"
+                                + "identity VARCHAR(255) NOT NULL DEFAULT 'teacher',"
                                 + "password VARCHAR(255) NOT NULL,"
                                 + "gender VARCHAR(255) NOT NULL DEFAULT '男' )";
 
                 String createMerchant = "CREATE TABLE IF NOT EXISTS merchant ("
                                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                                + "address VARCHAR(255) NOT NULL, "
+                                + "address VARCHAR(255) NOT NULL DEFAULT '暂无', "
                                 + "name VARCHAR(255) NOT NULL)";
 
                 String createDish = "CREATE TABLE IF NOT EXISTS dish ("
