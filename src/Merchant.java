@@ -23,7 +23,7 @@ public class Merchant {
                 if (operation == 1) {
                     printMerchantInfo();
                 } else if (operation == 2) {
-                    System.out.println("请选择要执行的具体操作:(1:添加菜品/2:删除菜品/3:退出)");
+                    System.out.println("请选择要执行的具体操作:(1:添加菜品/2:删除菜品/3:修改菜品信息/4:退出)");
                     int command = scanner.nextInt();
                     scanner.nextLine();
                     if (command == 1) {
@@ -39,6 +39,8 @@ public class Merchant {
                         String name = scanner.nextLine();
                         deleteDish(name);
                     } else if (command == 3) {
+                        updateDish();
+                    } else if (command == 4) {
                     }
                 } else if (operation == 3) {
                     break;
@@ -108,6 +110,66 @@ public class Merchant {
         } catch (SQLException e) {
             System.err.println("连接数据库时发生错误！");
             e.printStackTrace();
+        }
+    }
+
+    private void updateDish() {
+        System.out.println("请输入要修改的菜品ID:");
+        int dishId = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("请输入要修改的属性:");
+        String attribute = scanner.nextLine();
+        System.out.println("要修改成什么?");
+        String newValue = scanner.nextLine();
+        if (attribute.equalsIgnoreCase("price")) {
+            newValue = newValue.replace(",", ".");
+            String sql = "UPDATE dish SET " + attribute + " = " + newValue + " WHERE id = " + dishId;
+            try {
+                connection = DriverManager.getConnection(url, username, password);
+                statement = connection.createStatement();
+                int rowsAffected = statement.executeUpdate(sql);
+                if (rowsAffected > 0) {
+                    System.out.println("菜品信息更新成功");
+                } else {
+                    System.out.println("找不到该菜品");
+                }
+            } catch (SQLException e) {
+                System.err.println("更新菜品信息时发生错误！");
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (statement != null)
+                        statement.close();
+                    if (connection != null)
+                        connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            String sql = "UPDATE dish SET " + attribute + " = '" + newValue + "' WHERE id = " + dishId;
+            try {
+                connection = DriverManager.getConnection(url, username, password);
+                statement = connection.createStatement();
+                int rowsAffected = statement.executeUpdate(sql);
+                if (rowsAffected > 0) {
+                    System.out.println("菜品信息更新成功");
+                } else {
+                    System.out.println("找不到该菜品");
+                }
+            } catch (SQLException e) {
+                System.err.println("更新菜品信息时发生错误！");
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (statement != null)
+                        statement.close();
+                    if (connection != null)
+                        connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

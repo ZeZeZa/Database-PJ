@@ -31,16 +31,13 @@ public class Administrator {
                     insertCustomer(name, identity);
                 } else if (command == 2) {
                     showCustomers();
-                    System.out.println("请输入需要删除的用户id:");
+                    System.out.println("请输入需要删除的用户ID:");
                     int id = scanner.nextInt();
                     scanner.nextLine();
                     deleteCustomer(id);
                 } else if (command == 3) {
                     showCustomers();
-                    System.out.println("请输入需要修改的用户id:");
-                    int id = scanner.nextInt();
-                    scanner.nextLine();
-                    changeCustomer(id);
+                    updateCustomer();
                 }
             } else if (operation == 2) {
                 System.out.println("请选择要执行的具体操作:(1:添加商户/2:删除商户/3:修改商户)");
@@ -52,15 +49,13 @@ public class Administrator {
                     insertMerchant(name);
                 } else if (command == 2) {
                     showMerchants();
-                    System.out.println("请输入需要删除的商户id:");
+                    System.out.println("请输入需要删除的商户ID:");
                     int id = scanner.nextInt();
                     deleteMerchant(id);
                     scanner.nextLine();
                 } else if (command == 3) {
                     showMerchants();
-                    System.out.println("请输入需要修改的商户id:");
-                    int id = scanner.nextInt();
-
+                    updateMerchant();
                 }
             } else if (operation == 3) {
                 break;
@@ -117,12 +112,15 @@ public class Administrator {
         }
     }
 
-    private void changeCustomer(int id) {
+    private void updateCustomer() {
+        System.out.println("请输入要修改的商户ID:");
+        int customerId = scanner.nextInt();
+        scanner.nextLine();
         System.out.println("请输入要修改的属性 (name, identity, password):");
         String attribute = scanner.nextLine();
         System.out.println("要修改成什么?");
         String newValue = scanner.nextLine();
-        String sql = "UPDATE customer SET " + attribute + " = '" + newValue + "' WHERE id = " + id;
+        String sql = "UPDATE customer SET " + attribute + " = '" + newValue + "' WHERE id = " + customerId;
         try {
             connection = DriverManager.getConnection(url, username, password);
             statement = connection.createStatement();
@@ -199,12 +197,15 @@ public class Administrator {
         }
     }
 
-    private void changeMerchant(int id) {
+    private void updateMerchant() {
+        System.out.println("请输入要修改的商户ID:");
+        int merchantId = scanner.nextInt();
+        scanner.nextLine();
         System.out.println("请输入要修改的属性 (name, address):");
         String attribute = scanner.nextLine();
         System.out.println("要修改成什么?");
         String newValue = scanner.nextLine();
-        String sql = "UPDATE merchant SET " + attribute + " = '" + newValue + "' WHERE id = " + id;
+        String sql = "UPDATE merchant SET " + attribute + " = '" + newValue + "' WHERE id = " + merchantId;
         try {
             connection = DriverManager.getConnection(url, username, password);
             statement = connection.createStatement();
