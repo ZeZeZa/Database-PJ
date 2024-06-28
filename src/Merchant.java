@@ -22,6 +22,7 @@ public class Merchant {
                 int operation = scanner.nextInt();
                 if (operation == 1) {
                     printMerchantInfo();
+                    showDish(id);
                 } else if (operation == 2) {
                     System.out.println("请选择要执行的具体操作:(1:添加菜品/2:删除菜品/3:修改菜品信息/4:退出)");
                     int command = scanner.nextInt();
@@ -39,6 +40,7 @@ public class Merchant {
                         String name = scanner.nextLine();
                         deleteDish(name);
                     } else if (command == 3) {
+                        showDish(id);
                         updateDish();
                     } else if (command == 4) {
                     }
@@ -170,6 +172,39 @@ public class Merchant {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void showDish(int merchantId) {
+        String sql = "SELECT * FROM dish WHERE merchant_id = " + merchantId;
+        try {
+            connection = DriverManager.getConnection(url, username, password);
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            if (!rs.isBeforeFirst()) {
+                System.out.println("没有找到该商户的菜品");
+            } else {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String name = rs.getString("name");
+                    String type = rs.getString("type");
+                    String description = rs.getString("description");
+                    String imageURL = rs.getString("imageURL");
+                    String ingredient = rs.getString("ingredient");
+                    String nutrient = rs.getString("nutrient");
+                    String allergen = rs.getString("allergen");
+                    int price = rs.getInt("price");
+                    System.out.println("菜品ID: " + id + ", 名称: " + name + ", 类型：" + type + ", 价格：" + price
+                            + "\n描述:"
+                            + description + "\n成分:" + ingredient + ", 营养信息：" + nutrient + ", 过敏源：" + allergen
+                            + ", 图片地址：" + imageURL);
+                }
+            }
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            System.err.println("连接数据库时发生错误！");
+            e.printStackTrace();
         }
     }
 }

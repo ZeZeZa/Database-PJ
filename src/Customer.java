@@ -209,8 +209,8 @@ public class Customer {
                             String allergen = rs.getString("allergen");
                             int price = rs.getInt("price");
                             System.out.println("菜品ID: " + id + ", 名称: " + name + ", 类型：" + type + ", 价格：" + price
-                                    + "\n描述："
-                                    + description + "\n成分：" + ingredient + ", 营养信息：" + nutrient + ", 过敏源：" + allergen
+                                    + "\n描述:"
+                                    + description + "\n成分:" + ingredient + ", 营养信息：" + nutrient + ", 过敏源：" + allergen
                                     + ", 图片地址：" + imageURL);
                         }
                         statement.close();
